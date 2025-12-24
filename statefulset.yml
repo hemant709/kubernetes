@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hemant-statefulset
+  namespace: hemant-ns
+  labels:
+    app: myapp
+    component: statefulset
+spec:
+  serviceName: hemant-service
+  replicas: 3
+  selector:
+    matchLabels:
+      app: myapp
+      component: stateful
+  template:
+    metadata:
+      labels:
+        app: myapp
+        component: stateful
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.21
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: www
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
